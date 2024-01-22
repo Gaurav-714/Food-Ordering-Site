@@ -28,11 +28,15 @@ urlpatterns = [
     path('', home),
     path('login/', login_page, name = 'login'),
     path('register/', register_page, name = 'register'),
+    path('add-to-cart/<food_uid>', add_to_cart, name = 'add_to_cart'),
+    path('cart/', cart, name = 'cart'),
+    path('remove_cart_item/<cart_item_uid>/', remove_cart_item, name = 'remove_cart_item'),
+    path('order/', order, name = 'order')
 ]
 
 
 if settings.DEBUG:
-        urlpatterns += static(settings.MEDIA_URL,
-                              document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                            document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

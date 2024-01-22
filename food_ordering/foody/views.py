@@ -15,20 +15,22 @@ def login_page(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
 
-            user_obj = User.objects,filter(username = username)
+            user_obj = User.objects.filter(username = username)
             if not user_obj.exists():
-                messages.error(request, "Username Not Found.")
+                messages.warning(request, "Username Not Found.")
                 return redirect('/login/')
             
             user_obj = authenticate(username = username, password = password)
             if user_obj:
                 login(request, user_obj)
                 return redirect('/')
-            messages.error(request, "Wrong Password")
+            else:
+                messages.warning(request, "Wrong Password")
+            return redirect('/login/')
 
-        except Exception as ex:
-            return
-
+        except:
+            messages.warning(request, "Somthing went wrong.")
+            return redirect('/register/')
 
     return render(request, 'login.html')
 
@@ -41,7 +43,8 @@ def register_page(request):
 
             user_obj = User.objects.filter(username = username)
             if user_obj.exists():
-                messages.error(request, "Username is already taken.")
+                messages.warning(request, "Username is already taken.")
+                print(messages)
                 return redirect('/register/')
             
             user_obj = User.objects.create(username = username)
@@ -49,15 +52,42 @@ def register_page(request):
             user_obj.save()
 
             messages.success(request, "Account Created")
+            print(messages)
             return redirect('/login/')
         
-        except Exception as ex:
-            messages.error(request, "Something went wrong.")
+        except:
+            messages.warning(request, "Something went wrong.")
+            print(messages)
             return redirect('/login/')
 
     return render(request, 'register.html')
 
 
-
-def add_to_cart(request):
+def add_to_cart(request, food_uid):
+    user = request.user
+    food_obj = Food.objects.get(uid = food_uid)
+    cart , _ = Cart.objects.get_or_create(user = user, is_paid = False)
+    cart_items = CartItems.objects.create(
+        cart = cart,
+        food = food_obj
+    )
     return redirect('/')
+
+
+def cart(request):
+    cart = Cart.objects.get(user = request.user, is_paid = False)
+    context = {'cart' : cart}
+    return render(request, 'cart.html', context)
+
+
+def remove_cart_item(request, cart_item_uid):
+    try:
+        CartItems.objects.get(uid = cart_item_uid).delete()
+        return redirect('/cart/')
+    except Exception as ex:
+        print(ex)
+
+def order(request):
+    order = Cart.objects.filter(user = request.user, is_paid = True)
+    context = {'order' : order}
+    return render(request, 'order.html', context)

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block start %}
+
+<div class="container card shadow-lg mt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Sr.No.</th>
+                <th scope="col">Item Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Total</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart.cart_items.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><img src="/media/{{ item.food.image }}" style="height:50px; width:100px"></td>
+                <td>{{ item.food.food_name }}</td>
+                <td>{{ item.food.price }}</td>
+                <td>1</td>
+                <td>{{ item.food.price }}</td>
+                <td><a href="{% url 'remove_cart_item' item.uid %}" class="btn btn-outline-dark"><i class="fa-solid fa-trash-can"></i></a></td>
+            {% endfor %}
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <b>Grand Total</b>
+                    <p><b>{{ cart.order_total }}</b></p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
