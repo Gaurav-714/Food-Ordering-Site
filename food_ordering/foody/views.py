@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
+from instamojo_wrapper import Instamojo
+from django.conf import settings
+
+api = Instamojo(api_key = settings.API_KEY, auth_token = settings.AUTH_TOKEN,
+                endpoint='https://test.instamojo.com/api/1.1/')
 
 def home(request):
     food = Food.objects.all()
@@ -76,7 +81,14 @@ def add_to_cart(request, food_uid):
 
 def cart(request):
     cart = Cart.objects.get(user = request.user, is_paid = False)
-    context = {'cart' : cart}
+    response = api.payment_request_create(
+        amount = cart.order_total(),
+        purpose = "Order",
+        buyer_name = request.user.username,
+        email = "gaurav714@gmail.com",
+        redirect_url = "http://127.0.0.1:8000/success/"
+    )
+    context = {'cart' : cart, 'payment_url' : response['payment_request']['longurl']}
     return render(request, 'cart.html', context)
 
 
@@ -87,7 +99,9 @@ def remove_cart_item(request, cart_item_uid):
     except Exception as ex:
         print(ex)
 
+
 def order(request):
     order = Cart.objects.filter(user = request.user, is_paid = True)
     context = {'order' : order}
     return render(request, 'order.html', context)
+

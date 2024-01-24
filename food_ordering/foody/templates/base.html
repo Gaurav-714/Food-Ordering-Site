@@ -17,7 +17,7 @@
 			<a href="/" class="navbar-brand"><h4><b>Foody</b></h4></a>
 			<div class="d-flex">
 				{% if request.user.is_authenticated %}
-					<a href="/" class="btn btn-outline-light"><b>Dashboard</b></a>
+					<a href="{% url 'order' %}" class="btn btn-outline-light"><b>Dashboard</b></a>
 				{% else %}
 					<a href="{% url 'login' %}" class="navbar-brand"><b>Login</b></a>
 					<a href="{% url 'register' %}" class="navbar-brand"><b>Register</b></a>

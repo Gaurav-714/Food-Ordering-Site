@@ -3,7 +3,7 @@
 {% block start %}
 
 <div class="container card shadow-lg mt-5">
-    <table class="table">
+    <table class="table" style="text-align:center">
         <thead>
             <tr>
                 <th scope="col">Sr.No.</th>
@@ -15,23 +15,10 @@
             {% for item in order %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td><img src="/media/{{ item.food.image }}" style="height:50px; width:100px"></td>
                 <td>{{ item.order_total }}</td>
-                <td>{{ item.food.price }}</td>
-                <td>1</td>
-                <td>{{ item.food.price }}</td>
+                <td>True</td>
+                <td>{{ item.created_at }}</td>
             {% endfor %}
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <b>Grand Total</b>
-                    <p><b>{{ cart.order_total }}</b></p>
-                </td>
             </tr>
         </tbody>
     </table>
